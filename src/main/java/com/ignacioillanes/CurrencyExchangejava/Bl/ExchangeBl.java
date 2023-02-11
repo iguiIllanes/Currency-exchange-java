@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -27,9 +30,12 @@ public class ExchangeBl {
 
     OkHttpClient client = new OkHttpClient();
 
+    Logger logger = LoggerFactory.getLogger(ExchangeBl.class);
+
     // makes the convertion using the fixer.io api
     public ConvertionDto makeConvertion(String from, String to, BigDecimal amount)
             throws ServiceUnavailableException, ConvertionException {
+        logger.debug("Starting makeConvertion method");
 
         /*
          * Fixer "/convert" request example:
@@ -39,18 +45,18 @@ public class ExchangeBl {
          * 
          * Fixer "/convert" response example:
          * {
-         *   success: true,
-         *   query: {
-         *     from: "USD",
-         *     to: "BOB",
-         *     amount: 100
-         *   },
-         *   info: {
-         *     timestamp: 1676075043,
-         *     rate: 6.911391
-         *   },
-         *   date: 2023-02-11,
-         *   result: 691.1391
+         * success: true,
+         * query: {
+         * from: "USD",
+         * to: "BOB",
+         * amount: 100
+         * },
+         * info: {
+         * timestamp: 1676075043,
+         * rate: 6.911391
+         * },
+         * date: 2023-02-11,
+         * result: 691.1391
          * }
          */
 
@@ -72,14 +78,17 @@ public class ExchangeBl {
                 .build();
 
         try {
+            logger.debug("Making convertion request to fixer.io API");
             Response response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
                 throw new ConvertionException("Error while making the convertion request");
             }
 
+            logger.debug("Parsing convertion response");
             ConvertionDto convertion = objectMapper.readValue(response.body().string(), ConvertionDto.class);
             return convertion;
         } catch (Exception e) {
+            logger.error("Error while making the convertion request", e);
             throw new ServiceUnavailableException("Error while making the convertion request");
         }
     }
