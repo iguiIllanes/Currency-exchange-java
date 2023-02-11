@@ -2,8 +2,8 @@ package com.ignacioillanes.CurrencyExchangejava.Dto;
 
 public class ResponseDto {
     private Boolean success;
+    private ConvertionDto data;
     private String message;
-    private Object data;
 
 
     public Boolean isSuccess() {
@@ -26,11 +26,11 @@ public class ResponseDto {
         this.message = message;
     }
 
-    public Object getData() {
+    public ConvertionDto getData() {
         return this.data;
     }
 
-    public void setData(Object data) {
+    public void setData(ConvertionDto data) {
         this.data = data;
     }
 
@@ -38,7 +38,7 @@ public class ResponseDto {
     public ResponseDto() {
     }
 
-    public ResponseDto(Boolean success, String message, Object data) {
+    public ResponseDto(Boolean success, String message, ConvertionDto data) {
         this.success = success;
         this.message = message;
         this.data = data;
